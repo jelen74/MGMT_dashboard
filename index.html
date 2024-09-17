@@ -51,11 +51,29 @@
 <body>
     <button id="refreshButton" onclick="location.reload();">Refresh Data</button>
 
-    <h1>Application Status Distribution x</h1>
+    <h1>Application Status Distribution</h1>
 
     <!-- Kontejner pro čtyři grafy (2 sloupce, 2 řady) -->
-    <div class="chart-container" id="chartContainer">
-        <!-- Grafy budou generovány dynamicky -->
+    <div class="chart-container">
+        <div class="chart-box">
+            <h2 id="chartTitle1"></h2>
+            <canvas id="statusChart1"></canvas>
+        </div>
+        
+        <div class="chart-box">
+            <h2 id="chartTitle2"></h2>
+            <canvas id="statusChart2"></canvas>
+        </div>
+
+        <div class="chart-box">
+            <h2 id="chartTitle3"></h2>
+            <canvas id="statusChart3"></canvas>
+        </div>
+
+        <div class="chart-box">
+            <h2 id="chartTitle4"></h2>
+            <canvas id="statusChart4"></canvas>
+        </div>
     </div>
 
     <script>
@@ -68,25 +86,27 @@
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.load(arrayBuffer);
 
-            const chartContainer = document.getElementById('chartContainer');
-            let chartCount = 0;
+            // Načtení čtyř listů
+            const sheet1 = workbook.getWorksheet(1);
+            const sheet2 = workbook.getWorksheet(2);
+            const sheet3 = workbook.getWorksheet(3);
+            const sheet4 = workbook.getWorksheet(4);
 
-            // Procházíme pouze první 4 listy v sešitu
-            workbook.worksheets.slice(0, 4).forEach(async (worksheet) => {
-                const chartBox = document.createElement('div');
-                chartBox.className = 'chart-box';
-                chartBox.innerHTML = `<h2>${worksheet.name}</h2><canvas id="statusChart${chartCount + 1}"></canvas>`;
-                chartContainer.appendChild(chartBox);
-                
-                await createPieChartForWorksheet(worksheet, `statusChart${chartCount + 1}`);
-                chartCount++;
-            });
+            // Vykreslení grafu pro každý list
+            await createPieChartForWorksheet(sheet1, 'statusChart1', 'chartTitle1');  // První list
+            await createPieChartForWorksheet(sheet2, 'statusChart2', 'chartTitle2');  // Druhý list
+            await createPieChartForWorksheet(sheet3, 'statusChart3', 'chartTitle3');  // Třetí list
+            await createPieChartForWorksheet(sheet4, 'statusChart4', 'chartTitle4');  // Čtvrtý list
         }
 
         // Funkce pro vytvoření grafu pro konkrétní list
-        async function createPieChartForWorksheet(worksheet, canvasId) {
+        async function createPieChartForWorksheet(worksheet, canvasId, titleId) {
             const statusCounts = {};  // Objekt pro počítání jednotlivých stavů
             let totalApplications = 0;
+            const sheetName = worksheet.name;  // Název listu
+
+            // Nastavení názvu grafu podle názvu listu
+            document.getElementById(titleId).textContent = sheetName;
 
             worksheet.eachRow((row, rowNumber) => {
                 if (rowNumber > 1) {  // Předpokládáme, že první řádek jsou hlavičky
@@ -108,13 +128,9 @@
             const labels = Object.keys(statusCounts);  // Unikátní stavy
             const dataValues = Object.values(statusCounts).map(count => (count / totalApplications) * 100);  // Procentuální podíl
 
-            // Zničíme předchozí instance grafů na tomto plátně, pokud existují
-            const ctx = document.getElementById(canvasId).getContext('2d');
-            if (ctx.chart) {
-                ctx.chart.destroy();  // Zničení předchozí instance grafu, aby nedošlo k přepsání
-            }
             // Vykreslení koláčového grafu pomocí Chart.js
-            const newChart = new Chart(ctx, {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
                 type: 'pie',
                 data: {
                     labels: labels,  // Popisky pro stavy
@@ -159,9 +175,6 @@
                     }
                 }
             });
-
-            // Uložení nové instance grafu do kontextu pro možné zničení v budoucnu
-            ctx.chart = newChart;
         }
 
         // Zavolání funkce pro načtení dat a vykreslení grafů
