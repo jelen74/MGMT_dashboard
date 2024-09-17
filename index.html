@@ -3,17 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pie Chart - Application Status</title>
+    <title>Pie Charts - Application Status</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <h1>Application Status Distribution</h1>
+
+    <!-- Kontejnery pro dva grafy -->
+    <div>
+        <h2 id="chartTitle1"></h2>
+        <canvas id="statusChart1" width="400" height="400"></canvas>
+    </div>
+    
+    <div>
+        <h2 id="chartTitle2"></h2>
+        <canvas id="statusChart2" width="400" height="400"></canvas>
+    </div>
+
     <button onclick="location.reload();">Refresh Data</button>
-    <canvas id="statusChart" width="400" height="400"></canvas>
 
     <script>
-        async function loadExcelFileAndCreatePieChart() {
+        // Funkce pro načtení dat a vytvoření grafu pro každý list
+        async function loadExcelFileAndCreatePieCharts() {
             const fileUrl = 'data.xlsm';  // Cesta k tvému souboru XLSM
             const response = await fetch(fileUrl);
             const arrayBuffer = await response.arrayBuffer();
@@ -21,10 +33,19 @@
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.load(arrayBuffer);
 
-            const worksheet = workbook.getWorksheet('DJE');
+            // Vykreslení grafu pro každý list
+            await createPieChartForWorksheet(workbook.getWorksheet(1), 'statusChart1', 'chartTitle1');  // První list
+            await createPieChartForWorksheet(workbook.getWorksheet(2), 'statusChart2', 'chartTitle2');  // Druhý list
+        }
 
+        // Funkce pro vytvoření grafu pro konkrétní list
+        async function createPieChartForWorksheet(worksheet, canvasId, titleId) {
             const statusCounts = {};  // Objekt pro počítání jednotlivých stavů
             let totalApplications = 0;
+            const sheetName = worksheet.name;  // Název listu
+
+            // Dynamické doplnění názvu grafu podle názvu listu
+            document.getElementById(titleId).textContent = sheetName;
 
             worksheet.eachRow((row, rowNumber) => {
                 if (rowNumber > 1) {  // Předpokládáme, že první řádek jsou hlavičky
@@ -47,7 +68,7 @@
             const dataValues = Object.values(statusCounts).map(count => (count / totalApplications) * 100);  // Procentuální podíl
 
             // Vykreslení koláčového grafu pomocí Chart.js
-            const ctx = document.getElementById('statusChart').getContext('2d');
+            const ctx = document.getElementById(canvasId).getContext('2d');
             new Chart(ctx, {
                 type: 'pie',
                 data: {
@@ -86,7 +107,7 @@
                                     const status = tooltipItem.label;
                                     const percent = tooltipItem.raw.toFixed(2);  // Procento
                                     const count = statusCounts[status];  // Počet aplikací pro daný stav
-                                    return `${status}: ${percent}% / ${count} z ${totalApplications}`;
+                                    return `${status}: ${percent}% tj. ${count} z ${totalApplications}`;
                                 }
                             }
                         }
@@ -95,8 +116,8 @@
             });
         }
 
-        // Zavolání funkce pro načtení dat a vykreslení grafu
-        loadExcelFileAndCreatePieChart();
+        // Zavolání funkce pro načtení dat a vykreslení grafů
+        loadExcelFileAndCreatePieCharts();
     </script>
 </body>
 </html>
