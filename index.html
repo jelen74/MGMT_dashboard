@@ -51,7 +51,7 @@
 <body>
     <button id="refreshButton" onclick="location.reload();">Refresh Data</button>
 
-    <h1>Application Status Distribution x </h1>
+    <h1>Application Status Distribution</h1>
 
     <!-- Kontejner pro čtyři grafy (2 sloupce, 2 řady) -->
     <div class="chart-container" id="chartContainer">
@@ -71,17 +71,15 @@
             const chartContainer = document.getElementById('chartContainer');
             let chartCount = 0;
 
-            // Procházíme listy a zpracujeme pouze první 4 listy
-            workbook.eachSheet(async (worksheet, sheetId) => {
-                if (chartCount < 4) {  // Načteme maximálně 4 listy
-                    const chartBox = document.createElement('div');
-                    chartBox.className = 'chart-box';
-                    chartBox.innerHTML = `<h2>${worksheet.name}</h2><canvas id="statusChart${chartCount + 1}"></canvas>`;
-                    chartContainer.appendChild(chartBox);
-                    
-                    await createPieChartForWorksheet(worksheet, `statusChart${chartCount + 1}`);
-                    chartCount++;
-                }
+            // Procházíme pouze první 4 listy v sešitu
+            workbook.worksheets.slice(0, 4).forEach(async (worksheet) => {
+                const chartBox = document.createElement('div');
+                chartBox.className = 'chart-box';
+                chartBox.innerHTML = `<h2>${worksheet.name}</h2><canvas id="statusChart${chartCount + 1}"></canvas>`;
+                chartContainer.appendChild(chartBox);
+                
+                await createPieChartForWorksheet(worksheet, `statusChart${chartCount + 1}`);
+                chartCount++;
             });
         }
 
