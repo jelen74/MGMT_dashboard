@@ -56,22 +56,22 @@
     <!-- Kontejner pro čtyři grafy (2 sloupce, 2 řady) -->
     <div class="chart-container">
         <div class="chart-box">
-            <h2 id="chartTitle1">Graf 1</h2>
+            <h2>DJE</h2>
             <canvas id="statusChart1"></canvas>
         </div>
         
         <div class="chart-box">
-            <h2 id="chartTitle2">Graf 2</h2>
+            <h2>Trading</h2>
             <canvas id="statusChart2"></canvas>
         </div>
 
         <div class="chart-box">
-            <h2 id="chartTitle3">Graf 3</h2>
+            <h2>Distribuce</h2>
             <canvas id="statusChart3"></canvas>
         </div>
 
         <div class="chart-box">
-            <h2 id="chartTitle4">Graf 4</h2>
+            <h2>Prodej</h2>
             <canvas id="statusChart4"></canvas>
         </div>
     </div>
@@ -86,35 +86,23 @@
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.load(arrayBuffer);
 
-            // Načtení prvních čtyř listů, ale jen pokud skutečně existují
+            // Načtení prvních čtyř listů podle pevného názvu
             const sheet1 = workbook.getWorksheet(1);
             const sheet2 = workbook.getWorksheet(2);
             const sheet3 = workbook.getWorksheet(3);
             const sheet4 = workbook.getWorksheet(4);
 
-            // Zkontrolujeme, zda listy existují před tím, než je zpracujeme
-            if (sheet1 && sheet1.name) {
-                await createPieChartForWorksheet(sheet1, 'statusChart1', 'chartTitle1');
-            }
-            if (sheet2 && sheet2.name) {
-                await createPieChartForWorksheet(sheet2, 'statusChart2', 'chartTitle2');
-            }
-            if (sheet3 && sheet3.name) {
-                await createPieChartForWorksheet(sheet3, 'statusChart3', 'chartTitle3');
-            }
-            if (sheet4 && sheet4.name) {
-                await createPieChartForWorksheet(sheet4, 'statusChart4', 'chartTitle4');
-            }
+            // Vykreslení grafů pro první čtyři listy
+            await createPieChartForWorksheet(sheet1, 'statusChart1');  // První list DJE
+            await createPieChartForWorksheet(sheet2, 'statusChart2');  // Druhý list Trading
+            await createPieChartForWorksheet(sheet3, 'statusChart3');  // Třetí list Distribuce
+            await createPieChartForWorksheet(sheet4, 'statusChart4');  // Čtvrtý list Prodej
         }
 
         // Funkce pro vytvoření grafu pro konkrétní list
-        async function createPieChartForWorksheet(worksheet, canvasId, titleId) {
+        async function createPieChartForWorksheet(worksheet, canvasId) {
             const statusCounts = {};  // Objekt pro počítání jednotlivých stavů
             let totalApplications = 0;
-            const sheetName = worksheet.name;  // Název listu
-
-            // Dynamické doplnění názvu grafu podle názvu listu
-            document.getElementById(titleId).textContent = sheetName;
 
             worksheet.eachRow((row, rowNumber) => {
                 if (rowNumber > 1) {  // Předpokládáme, že první řádek jsou hlavičky
