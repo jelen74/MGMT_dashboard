@@ -51,27 +51,27 @@
 <body>
     <button id="refreshButton" onclick="location.reload();">Refresh Data</button>
 
-    <h1>Application Status Distribution</h1>
+    <h1>Application Status Distribution x</h1>
 
     <!-- Kontejner pro čtyři grafy (2 sloupce, 2 řady) -->
     <div class="chart-container">
         <div class="chart-box">
-            <h2 id="chartTitle1"></h2>
+            <h2 id="chartTitle1">Graf 1</h2>
             <canvas id="statusChart1"></canvas>
         </div>
         
         <div class="chart-box">
-            <h2 id="chartTitle2"></h2>
+            <h2 id="chartTitle2">Graf 2</h2>
             <canvas id="statusChart2"></canvas>
         </div>
 
         <div class="chart-box">
-            <h2 id="chartTitle3"></h2>
+            <h2 id="chartTitle3">Graf 3</h2>
             <canvas id="statusChart3"></canvas>
         </div>
 
         <div class="chart-box">
-            <h2 id="chartTitle4"></h2>
+            <h2 id="chartTitle4">Graf 4</h2>
             <canvas id="statusChart4"></canvas>
         </div>
     </div>
@@ -86,17 +86,16 @@
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.load(arrayBuffer);
 
-            // Ověření, že soubor obsahuje alespoň 4 listy
-            if (workbook.worksheets.length < 4) {
-                alert("Excel soubor musí obsahovat alespoň 4 listy!");
-                return;
-            }
+            // Debugging: Zjistíme, kolik listů máme
+            console.log(`Workbook obsahuje ${workbook.worksheets.length} listů.`);
 
-            // Načtení čtyř listů
+            // Načtení prvních čtyř listů a debugování jejich názvů
             const sheet1 = workbook.getWorksheet(1);
             const sheet2 = workbook.getWorksheet(2);
             const sheet3 = workbook.getWorksheet(3);
             const sheet4 = workbook.getWorksheet(4);
+
+            console.log(`Názvy listů: ${sheet1.name}, ${sheet2.name}, ${sheet3.name}, ${sheet4.name}`);
 
             // Vykreslení grafu pro každý list
             await createPieChartForWorksheet(sheet1, 'statusChart1', 'chartTitle1');  // První list
@@ -110,6 +109,9 @@
             const statusCounts = {};  // Objekt pro počítání jednotlivých stavů
             let totalApplications = 0;
             const sheetName = worksheet.name;  // Název listu
+
+            // Debugging: kontrola názvu listu
+            console.log(`Zpracovávám list: ${sheetName}`);
 
             // Dynamické doplnění názvu grafu podle názvu listu
             document.getElementById(titleId).textContent = sheetName;
@@ -133,6 +135,9 @@
             // Připravíme data pro graf
             const labels = Object.keys(statusCounts);  // Unikátní stavy
             const dataValues = Object.values(statusCounts).map(count => (count / totalApplications) * 100);  // Procentuální podíl
+
+            // Debugging: kontrola dat pro graf
+            console.log(`Data pro graf (${sheetName}): ${JSON.stringify(statusCounts)}`);
 
             // Zničíme předchozí instance grafů na tomto plátně, pokud existují
             const ctx = document.getElementById(canvasId).getContext('2d');
