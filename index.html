@@ -86,17 +86,25 @@
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.load(arrayBuffer);
 
-            // Načtení prvních čtyř listů
+            // Načtení prvních čtyř listů, ale jen pokud skutečně existují
             const sheet1 = workbook.getWorksheet(1);
             const sheet2 = workbook.getWorksheet(2);
             const sheet3 = workbook.getWorksheet(3);
             const sheet4 = workbook.getWorksheet(4);
 
-            // Vykreslení grafu pro každý list
-            await createPieChartForWorksheet(sheet1, 'statusChart1', 'chartTitle1');  // První list
-            await createPieChartForWorksheet(sheet2, 'statusChart2', 'chartTitle2');  // Druhý list
-            await createPieChartForWorksheet(sheet3, 'statusChart3', 'chartTitle3');  // Třetí list
-            await createPieChartForWorksheet(sheet4, 'statusChart4', 'chartTitle4');  // Čtvrtý list
+            // Zkontrolujeme, zda listy existují před tím, než je zpracujeme
+            if (sheet1 && sheet1.name) {
+                await createPieChartForWorksheet(sheet1, 'statusChart1', 'chartTitle1');
+            }
+            if (sheet2 && sheet2.name) {
+                await createPieChartForWorksheet(sheet2, 'statusChart2', 'chartTitle2');
+            }
+            if (sheet3 && sheet3.name) {
+                await createPieChartForWorksheet(sheet3, 'statusChart3', 'chartTitle3');
+            }
+            if (sheet4 && sheet4.name) {
+                await createPieChartForWorksheet(sheet4, 'statusChart4', 'chartTitle4');
+            }
         }
 
         // Funkce pro vytvoření grafu pro konkrétní list
