@@ -51,9 +51,13 @@
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.load(arrayBuffer);
 
+            // Získání konkrétních listů podle názvu
+            const sheet1 = workbook.getWorksheet('DJE');
+            const sheet2 = workbook.getWorksheet('Trading');
+
             // Vykreslení grafu pro každý list
-            await createPieChartForWorksheet(workbook.getWorksheet(1), 'statusChart1', 'chartTitle1');  // První list (DJE)
-            await createPieChartForWorksheet(workbook.getWorksheet(2), 'statusChart2', 'chartTitle2');  // Druhý list (Trading)
+            await createPieChartForWorksheet(sheet1, 'statusChart1', 'chartTitle1');  // List DJE
+            await createPieChartForWorksheet(sheet2, 'statusChart2', 'chartTitle2');  // List Trading
         }
 
         // Funkce pro vytvoření grafu pro konkrétní list
