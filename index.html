@@ -6,8 +6,28 @@
     <title>Pie Charts - Application Status</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Styl pro tlačítko, aby bylo umístěno vlevo nahoře */
+        #refreshButton {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #refreshButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
+    <button id="refreshButton" onclick="location.reload();">Refresh Data</button>
+
     <h1>Application Status Distribution</h1>
 
     <!-- Kontejnery pro dva grafy -->
@@ -21,8 +41,6 @@
         <canvas id="statusChart2" width="400" height="400"></canvas>
     </div>
 
-    <button onclick="location.reload();">Refresh Data</button>
-
     <script>
         // Funkce pro načtení dat a vytvoření grafu pro každý list
         async function loadExcelFileAndCreatePieCharts() {
@@ -34,8 +52,8 @@
             await workbook.xlsx.load(arrayBuffer);
 
             // Vykreslení grafu pro každý list
-            await createPieChartForWorksheet(workbook.getWorksheet(1), 'statusChart1', 'chartTitle1');  // První list
-            await createPieChartForWorksheet(workbook.getWorksheet(2), 'statusChart2', 'chartTitle2');  // Druhý list
+            await createPieChartForWorksheet(workbook.getWorksheet(1), 'statusChart1', 'chartTitle1');  // První list (DJE)
+            await createPieChartForWorksheet(workbook.getWorksheet(2), 'statusChart2', 'chartTitle2');  // Druhý list (Trading)
         }
 
         // Funkce pro vytvoření grafu pro konkrétní list
