@@ -51,7 +51,7 @@
 <body>
     <button id="refreshButton" onclick="location.reload();">Refresh Data</button>
 
-    <h1>Application Status Distribution x</h1>
+    <h1>Application Status Distribution</h1>
 
     <!-- Kontejner pro čtyři grafy (2 sloupce, 2 řady) -->
     <div class="chart-container">
@@ -86,16 +86,11 @@
             const workbook = new ExcelJS.Workbook();
             await workbook.xlsx.load(arrayBuffer);
 
-            // Debugging: Zjistíme, kolik listů máme
-            console.log(`Workbook obsahuje ${workbook.worksheets.length} listů.`);
-
-            // Načtení prvních čtyř listů a debugování jejich názvů
+            // Načtení prvních čtyř listů
             const sheet1 = workbook.getWorksheet(1);
             const sheet2 = workbook.getWorksheet(2);
             const sheet3 = workbook.getWorksheet(3);
             const sheet4 = workbook.getWorksheet(4);
-
-            console.log(`Názvy listů: ${sheet1.name}, ${sheet2.name}, ${sheet3.name}, ${sheet4.name}`);
 
             // Vykreslení grafu pro každý list
             await createPieChartForWorksheet(sheet1, 'statusChart1', 'chartTitle1');  // První list
@@ -109,9 +104,6 @@
             const statusCounts = {};  // Objekt pro počítání jednotlivých stavů
             let totalApplications = 0;
             const sheetName = worksheet.name;  // Název listu
-
-            // Debugging: kontrola názvu listu
-            console.log(`Zpracovávám list: ${sheetName}`);
 
             // Dynamické doplnění názvu grafu podle názvu listu
             document.getElementById(titleId).textContent = sheetName;
@@ -135,9 +127,6 @@
             // Připravíme data pro graf
             const labels = Object.keys(statusCounts);  // Unikátní stavy
             const dataValues = Object.values(statusCounts).map(count => (count / totalApplications) * 100);  // Procentuální podíl
-
-            // Debugging: kontrola dat pro graf
-            console.log(`Data pro graf (${sheetName}): ${JSON.stringify(statusCounts)}`);
 
             // Zničíme předchozí instance grafů na tomto plátně, pokud existují
             const ctx = document.getElementById(canvasId).getContext('2d');
