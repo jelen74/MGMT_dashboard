@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application Status</title>
+    <title>Pie Charts - Application Status</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -23,6 +23,23 @@
         #refreshButton:hover {
             background-color: #0056b3;
         }
+
+        /* Nastavení kontejneru pro grafy vedle sebe */
+        .chart-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            margin-top: 60px; /* Prostor kvůli tlačítku */
+        }
+
+        .chart-box {
+            width: 45%; /* Každý graf zabere 45% šířky obrazovky */
+        }
+
+        canvas {
+            width: 100% !important; /* Aby se graf přizpůsobil šířce kontejneru */
+            height: auto !important;
+        }
     </style>
 </head>
 <body>
@@ -30,15 +47,17 @@
 
     <h1>Application Status Distribution</h1>
 
-    <!-- Kontejnery pro dva grafy -->
-    <div>
-        <h2 id="chartTitle1"></h2>
-        <canvas id="statusChart1" width="400" height="400"></canvas>
-    </div>
-    
-    <div>
-        <h2 id="chartTitle2"></h2>
-        <canvas id="statusChart2" width="400" height="400"></canvas>
+    <!-- Kontejner pro oba grafy vedle sebe -->
+    <div class="chart-container">
+        <div class="chart-box">
+            <h2 id="chartTitle1"></h2>
+            <canvas id="statusChart1"></canvas>
+        </div>
+        
+        <div class="chart-box">
+            <h2 id="chartTitle2"></h2>
+            <canvas id="statusChart2"></canvas>
+        </div>
     </div>
 
     <script>
