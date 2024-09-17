@@ -51,7 +51,7 @@
 <body>
     <button id="refreshButton" onclick="location.reload();">Refresh Data</button>
 
-    <h1>Application Status Distribution</h1>
+    <h1>Application Status Distribution x</h1>
 
     <!-- Kontejner pro čtyři grafy (2 sloupce, 2 řady) -->
     <div class="chart-container" id="chartContainer">
@@ -108,9 +108,13 @@
             const labels = Object.keys(statusCounts);  // Unikátní stavy
             const dataValues = Object.values(statusCounts).map(count => (count / totalApplications) * 100);  // Procentuální podíl
 
-            // Vykreslení koláčového grafu pomocí Chart.js
+            // Zničíme předchozí instance grafů na tomto plátně, pokud existují
             const ctx = document.getElementById(canvasId).getContext('2d');
-            new Chart(ctx, {
+            if (ctx.chart) {
+                ctx.chart.destroy();  // Zničení předchozí instance grafu, aby nedošlo k přepsání
+            }
+            // Vykreslení koláčového grafu pomocí Chart.js
+            const newChart = new Chart(ctx, {
                 type: 'pie',
                 data: {
                     labels: labels,  // Popisky pro stavy
@@ -155,6 +159,9 @@
                     }
                 }
             });
+
+            // Uložení nové instance grafu do kontextu pro možné zničení v budoucnu
+            ctx.chart = newChart;
         }
 
         // Zavolání funkce pro načtení dat a vykreslení grafů
