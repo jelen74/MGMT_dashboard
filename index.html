@@ -33,7 +33,8 @@
         }
 
         .chart-box {
-            width: 100%; /* Každý graf zabere 100% svého kontejneru */
+            width: 50%; /* Každý graf zabere 50% svého kontejneru (poloviční velikost) */
+            margin: 0 auto; /* Vycentrování grafu v boxu */
         }
 
         canvas {
@@ -45,7 +46,7 @@
 <body>
     <button id="refreshButton" onclick="location.reload();">Refresh Data</button>
 
-    <h1>Application Status Distribution 2x2</h1>
+    <h1>Application Status Distribution</h1>
 
     <!-- Kontejner pro čtyři grafy (2 sloupce, 2 řady) -->
     <div class="chart-container">
