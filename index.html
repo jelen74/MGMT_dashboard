@@ -69,17 +69,17 @@
             await workbook.xlsx.load(arrayBuffer);
 
             const chartContainer = document.getElementById('chartContainer');
-            let chartCount = 1;
+            let chartCount = 0;
 
-            // Procházíme všechny listy v sešitu
+            // Procházíme listy a zpracujeme pouze první 4 listy
             workbook.eachSheet(async (worksheet, sheetId) => {
-                if (chartCount <= 4) {  // Omezíme počet grafů na 4
+                if (chartCount < 4) {  // Načteme maximálně 4 listy
                     const chartBox = document.createElement('div');
                     chartBox.className = 'chart-box';
-                    chartBox.innerHTML = `<h2>${worksheet.name}</h2><canvas id="statusChart${chartCount}"></canvas>`;
+                    chartBox.innerHTML = `<h2>${worksheet.name}</h2><canvas id="statusChart${chartCount + 1}"></canvas>`;
                     chartContainer.appendChild(chartBox);
                     
-                    await createPieChartForWorksheet(worksheet, `statusChart${chartCount}`);
+                    await createPieChartForWorksheet(worksheet, `statusChart${chartCount + 1}`);
                     chartCount++;
                 }
             });
