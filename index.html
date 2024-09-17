@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pie Charts - Application Status</title>
+    <title>Application Status</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -33,7 +33,7 @@
         }
 
         .chart-box {
-            width: 50%; /* Každý graf zabere 50% svého kontejneru (poloviční velikost) */
+            width: 40%; /* Každý graf zabere 50% svého kontejneru (poloviční velikost) */
             margin: 0 auto; /* Vycentrování grafu v boxu */
         }
 
@@ -46,7 +46,7 @@
 <body>
     <button id="refreshButton" onclick="location.reload();">Refresh Data</button>
 
-    <h1>Application Status Distribution</h1>
+    <h1 style="text-align: center;">Management dashboard</h1>
 
     <!-- Kontejner pro čtyři grafy (2 sloupce, 2 řady) -->
     <div class="chart-container">
